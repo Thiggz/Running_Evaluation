@@ -1,0 +1,19 @@
+nodes:
+- input.visual:
+    source: data/input/karthik_run.mp4
+- model.yolo:
+    detect: ['person']
+    score_threshold: 0.2
+- model.posenet
+- augment.brightness:
+    beta: 10
+- dabble.fps
+- custom_nodes.dabble.stride
+- draw.poses
+- draw.legend:
+    show: ["fps"]
+- output.screen
+- output.csv_writer:
+    stats_to_track: ["keypoints", "stride"]
+    file_path: data/output/keypoints.csv
+    logging_interval: 0

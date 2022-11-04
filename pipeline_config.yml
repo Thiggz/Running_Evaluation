@@ -1,6 +1,6 @@
 nodes:
 - input.visual:
-    source: data/input/karthik_run.mp4
+    source: data/input/karthik_run_sample.mp4
 - model.yolo:
     detect: ['person']
     score_threshold: 0.2

@@ -2,7 +2,7 @@
 Node template for creating custom nodes.
 """
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 import cv2
 
 from peekingduck.pipeline.nodes.abstract_node import AbstractNode
@@ -53,25 +53,38 @@ class Node(AbstractNode):
                 "img", "bboxes", "bbox_scores", "keypoints", "keypoint_scores".
 
         Returns:
-            outputs (dict): Empty dictionary.
+            outputs (dict): Dictionary with one key
+                "stride"
         """
         
         # get required inputs from pipeline
         img = inputs["img"]
         bboxes = inputs["bboxes"]
+        bbox_scores = inputs["bbox_scores"]
         keypoints = inputs["keypoints"]
         keypoint_scores = inputs["keypoint_scores"]
 
         img_size = (img.shape[1], img.shape[0])  # image width, height
 
         # get bounding box confidence score and draw it at the
-        # left-bottom (x1, y2) corner of the bounding box (offset by 30 pixels)
+        # bottom of the bounding box
         try: 
             the_bbox = bboxes[0]             # image only has one person
+            the_bbox_score = bbox_scores[0]
             
             x1, y1, x2, y2 = map_bbox_to_image_coords(the_bbox, img_size)
-            width, height = img_size[0], img_size[1]
-
+        
+            score_str = f"BBox {the_bbox_score:0.2f}"
+            cv2.putText(
+                img=img,
+                text=score_str,
+                org=(x1-50, y1+50),  
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.5,
+                color=WHITE,
+                thickness=1,
+            )
+            
             the_keypoints = keypoints[0]              # image only has one person
             the_keypoint_scores = keypoint_scores[0]  # only one set of scores
             right_ankle = None
